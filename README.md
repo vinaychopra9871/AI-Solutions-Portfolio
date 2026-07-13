@@ -1,34 +1,56 @@
-
-# AI Solutions Portfolio
-
-A collection of AI-powered automation workflows, agents, and applied AI projects.
-
 ## Technologies
-- n8n
+
+### Generative AI
+- OpenAI API
 - Hugging Face Inference API
-- OpenAI
+- LangChain
+- LangGraph
+- Retrieval-Augmented Generation (RAG)
+- AI Agents
+- Prompt Engineering
+- Large Language Models (LLMs)
+
+### Machine Learning & NLP
+- Sentiment Analysis
+- Natural Language Processing (NLP)
+- Text Classification
+- Embeddings
+- Vector Search
+
+### Automation & Orchestration
+- n8n
+- Workflow Automation
+- Event-driven Automation
+- Webhooks
+
+### Programming
+- Python
+- JavaScript
+- SQL
+
+### APIs & Cloud
+- REST APIs
+- JSON
+- HTTP Requests
+
+### Google Workspace
+- Google Forms
 - Google Sheets
 - Gmail API
-- Python
-- REST APIs
+- Google Drive
 
-## Repository Structure
+### Databases & Vector Stores
+- SQLite
+- PostgreSQL
+- ChromaDB
+- FAISS
 
-```
-n8n-workflows/
-applied-ai/
-ai-agents/
-docs/
-```
+### Data & Visualization
+- Microsoft Excel
+- Power BI
+- Pandas
 
-## Projects
-
-### Customer Feedback Sentiment Analysis Automation
-- Google Forms → Google Sheets
-- Sentiment Analysis using Hugging Face
-- Automatic sheet update
-- Email alerts for negative feedback
-- HTML email dashboard
-- Built using n8n
-
-More projects coming soon.
+### Development Tools
+- Git
+- GitHub
+- VS Code
