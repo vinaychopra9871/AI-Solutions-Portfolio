@@ -1,0 +1,447 @@
+{
+  "name": "AI-Powered Customer Feedback Sentiment Analysis & Alert System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 924046631,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit#gid=924046631"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4a17e1e2-848b-4671-812f-ef7776530b4f",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "7leJcMkRyKNKjolQ",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://router.huggingface.co/hf-inference/models/tabularisai/multilingual-sentiment-analysis",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"inputs\": \"{{$json['Please share your feedback']}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "38bb101f-407a-4c76-8ae9-3de205f449ed",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const result = $input.item.json; const top = result[0]; let sentiment = top.label; if (sentiment === \"Very Positive\") sentiment = \"Positive\"; if (sentiment === \"Very Negative\") sentiment = \"Negative\"; return { sentiment, confidence: top.score };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "c741c930-0195-4798-b845-1a7480d3d739",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 924046631,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit#gid=924046631"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Sentiment": "={{$node[\"Code in JavaScript\"].json[\"sentiment\"]}}",
+            "Confidence": "={{$node[\"Code in JavaScript\"].json[\"confidence\"]}}",
+            "Timestamp": "={{$('Google Sheets Trigger').item.json['Timestamp']}}"
+          },
+          "matchingColumns": [
+            "Timestamp"
+          ],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name ",
+              "displayName": "Customer Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "  Email Address  ",
+              "displayName": "  Email Address  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "  Please share your feedback  ",
+              "displayName": "  Please share your feedback  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentiment",
+              "displayName": "Sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        0
+      ],
+      "id": "628f27d5-dc9a-4621-88e6-1c841cd1433c",
+      "name": "Update row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iuVpfbRUdcfKlP9l",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0b2923cf-c239-4163-927d-44f5d3a08388",
+              "leftValue": "={{$node[\"Code in JavaScript\"].json[\"sentiment\"]}}",
+              "rightValue": "Negative",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        0
+      ],
+      "id": "e495b28e-8b2c-454c-87eb-436f28851d6a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 924046631,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14A5dUqyVghHc8gGjaRmfxNo2nuDTn_Yrv8P-ydwmf60/edit#gid=924046631"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1072,
+        -128
+      ],
+      "id": "e5a0e9b4-d83a-4107-a237-48797726ac56",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iuVpfbRUdcfKlP9l",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let positive = 0;\nlet neutral = 0;\nlet negative = 0;\n\nfor (const item of $input.all()) {\n    const sentiment = item.json.Sentiment;\n\n    if (sentiment === \"Positive\")\n        positive++;\n\n    else if (sentiment === \"Neutral\")\n        neutral++;\n\n    else if (sentiment === \"Negative\")\n        negative++;\n}\n\nreturn [{\n    json: {\n        total: positive + neutral + negative,\n        positive,\n        neutral,\n        negative\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -128
+      ],
+      "id": "3491106f-1dfd-4eeb-8d91-3aff467b2217",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "sendTo": "vinaytempuse@gmail.com",
+        "subject": "🚨 Customer Feedback Alert",
+        "message": "=<h2>🚨 Customer Feedback Alert</h2>  <p>A new <strong style=\"color:red;\">Negative</strong> customer feedback has been received.</p>  <h3>📊 Overall Feedback Summary</h3>  <table border=\"1\" cellpadding=\"8\" cellspacing=\"0\">   <tr>     <th>Total Responses</th>     <th>Positive</th>     <th>Neutral</th>     <th>Negative</th>   </tr>   <tr>     <td>{{$json.total}}</td>     <td style=\"color:green;\"><strong>{{$json.positive}}</strong></td>     <td style=\"color:orange;\"><strong>{{$json.neutral}}</strong></td>     <td style=\"color:red;\"><strong>{{$json.negative}}</strong></td>   </tr> </table>  <br>  <h3>📝 Latest Negative Feedback</h3>  <p><strong>Customer:</strong> {{$node[\"Google Sheets Trigger\"].json[\"Customer Name\"]}} </p>  <p><strong>Feedback:</strong><br> {{$node[\"Google Sheets Trigger\"].json[\"Please share your feedback\"]}} </p>  <p><strong>Sentiment:</strong> {{$node[\"Code in JavaScript\"].json[\"sentiment\"]}} </p>  <p><strong>Confidence:</strong> {{($node[\"Code in JavaScript\"].json[\"confidence\"] * 100).toFixed(2)}}% </p>  <p><strong>Timestamp:</strong> {{$node[\"Google Sheets Trigger\"].json[\"Timestamp\"]}} </p>  <hr>  <p>Please review this feedback and take the necessary action.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "b1f900dd-944e-43c6-806c-cab212f7bf98",
+      "name": "Send a message",
+      "webhookId": "6674f993-b56c-44ef-a609-2a221234408a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PZ6okgsIsSZgzYxX",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1472,
+        0
+      ],
+      "id": "02976fda-dd97-4031-b5f1-2c14d823d756",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e7dd43b0-78ae-4da7-bee8-d6caddfbe604",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b085f92697243aa6d9541f541400013fffb111f3479cb8e8f1a0e8c38a868b73"
+  },
+  "nodeGroups": [],
+  "id": "m0TJjRx7LZRISHr0",
+  "tags": [
+    {
+      "name": "Customer Feedback",
+      "id": "Q0yWVk3qTnRgDvak",
+      "updatedAt": "2026-07-13T09:54:40.359Z",
+      "createdAt": "2026-07-13T09:54:40.359Z"
+    }
+  ]
+}
