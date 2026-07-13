@@ -44,6 +44,22 @@ flowchart TD
     H --> I
 ```
 ---
+## Workflow
+
+The workflow automates customer feedback analysis from submission to notification. Each node performs a specific task to ensure feedback is analyzed, stored, and monitored efficiently.
+
+| **Node** | **Purpose** |
+|----------|-------------|
+| **Google Sheets Trigger** | Monitors the linked Google Sheet for new responses submitted through Google Forms. Every new row automatically triggers the workflow. |
+| **HTTP Request** | Sends the customer's feedback text to the Hugging Face Multilingual Sentiment Analysis API and retrieves the predicted sentiment with confidence scores. |
+| **Code (JavaScript)** | Processes the API response by selecting the highest-confidence sentiment, normalizing the labels (e.g., *Very Positive* → *Positive*), and extracting the confidence score. |
+| **Update Row in Sheet** | Updates the corresponding row in Google Sheets with the predicted sentiment and confidence score, keeping the dataset enriched for future analysis. |
+| **If** | Evaluates whether the detected sentiment is **Negative**. Positive and Neutral feedback end the workflow, while Negative feedback continues to the alert process. |
+| **Get Row(s) in Sheet** | Retrieves all feedback records from Google Sheets to calculate overall sentiment statistics for reporting. |
+| **Code (JavaScript)** | Counts the total number of Positive, Neutral, and Negative responses and prepares a summary of the overall customer sentiment. |
+| **Merge** | Combines the latest negative feedback details with the generated sentiment summary into a single dataset for email generation. |
+| **Gmail (Send a Message)** | Sends a formatted HTML email containing the latest negative feedback along with an overall sentiment summary, enabling quick action on customer issues. |
+---
 
 ## Technologies
 
