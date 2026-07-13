@@ -55,8 +55,81 @@ flowchart TD
 - REST API
 
 ---
+## Import Workflow
 
-## Future Improvements
+### Prerequisites
+
+Before importing the workflow, ensure you have:
+
+- An active n8n instance
+- A Google account
+- A Hugging Face account with an Inference API key
+- A Gmail account for sending notifications
+
+---
+
+### Setup Instructions
+
+1. Download `customer-feedback-sentiment-analysis.json`.
+
+2. Import the workflow into n8n:
+   - Open **n8n**
+   - Click **Import from File**
+   - Select the downloaded workflow JSON
+
+3. Configure the required credentials:
+   - Google Sheets OAuth2
+   - Google Sheets Trigger OAuth2
+   - Gmail OAuth2
+
+4. Create a Google Form linked to a Google Sheet with the following columns:
+
+   - Timestamp
+   - Customer Name
+   - Email Address
+   - Please share your feedback
+   - Sentiment
+   - Confidence
+
+5. Update the workflow configuration:
+   - Select your Google Spreadsheet in both Google Sheets nodes.
+   - Select the correct worksheet.
+   - Replace the placeholder below with your own Hugging Face API key:
+
+   ```
+   Authorization: Bearer YOUR_HUGGINGFACE_API_KEY
+   ```
+
+6. Update the Gmail node:
+   - Replace `your_email@gmail.com` with the email address where you want to receive alerts.
+
+7. Save and activate the workflow.
+
+---
+
+### Workflow Trigger
+
+Whenever a new response is submitted through the Google Form:
+
+- The workflow is triggered automatically.
+- Customer feedback is analyzed using Hugging Face's multilingual sentiment analysis model.
+- The sentiment and confidence score are written back to Google Sheets.
+- If the feedback is classified as **Negative**, an HTML email alert is sent containing:
+  - Latest customer feedback
+  - Sentiment
+  - Confidence score
+  - Overall feedback summary (Positive, Neutral, Negative, Total)
+
+---
+
+### Notes
+
+- API keys and credentials are **not included** in this repository.
+- Replace all placeholder values with your own credentials before running the workflow.
+- The Google Sheet used in this repository is for demonstration purposes. You can replace it with your own sheet after importing the workflow.
+
+---
+## Improvements which can be incorporated
 
 - Power BI Dashboard
 - Slack Notifications
